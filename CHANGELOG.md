@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [10.0.2] - 2026-06-26
+### Changed
+- Create canvas contexts with `{ willReadFrequently: true }` to improve speed
+  and suppress chrome warnings
+
+
 ## [10.0.1] - 2026-05-18
 ### Added
 - Added package export subpaths for split/browser builds
@@ -365,6 +371,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
+[10.0.2]: https://github.com/nodeca/pica/compare/10.0.1...10.0.2
 [10.0.1]: https://github.com/nodeca/pica/compare/10.0.0...10.0.1
 [10.0.0]: https://github.com/nodeca/pica/compare/9.0.1...10.0.0
 [9.0.1]: https://github.com/nodeca/pica/compare/9.0.0...9.0.1

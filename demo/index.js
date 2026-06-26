@@ -35,9 +35,9 @@ const filter_name = [
   'mks2013'
 ]
 
-
 let resizer
 
+const ctxOpts = { willReadFrequently: true }
 
 const resizer_mode = {
   js: true,
@@ -71,7 +71,7 @@ function updateOrig () {
     h: img.height
   }))
 
-  ctx = src.getContext("2d")
+  ctx = src.getContext("2d", ctxOpts)
   ctx.drawImage(img, 0, 0)
 }
 
@@ -88,7 +88,7 @@ const updateResized = _.debounce(function () {
 
   start = performance.now()
 
-  ctx = dst.getContext("2d")
+  ctx = dst.getContext("2d", ctxOpts)
   ctx.drawImage(img, 0, 0, dst.width, dst.height)
 
   time = (performance.now() - start).toFixed(2)
@@ -131,7 +131,7 @@ const updateResized = _.debounce(function () {
       time = (performance.now() - start).toFixed(2)
 
       // Copy buffer to visible element
-      dst.getContext('2d').drawImage(offScreenCanvas, 0, 0)
+      dst.getContext('2d', ctxOpts).drawImage(offScreenCanvas, 0, 0)
 
       let features
 

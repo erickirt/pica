@@ -19,7 +19,9 @@ function resize_math (data: { features: PicaFeaturesFlat }, tileJob: MathResizeA
 
 function resizeBitmap (data: WorkerResizePayload, tileJob: TileResizeBitmapJob): void {
   let srcCanvas: OffscreenCanvas | null = new OffscreenCanvas(tileJob.width, tileJob.height)
-  const srcCtx = srcCanvas.getContext('2d')!
+
+  const ctxOpts: CanvasRenderingContext2DSettings = { willReadFrequently: true }
+  const srcCtx = srcCanvas.getContext('2d', ctxOpts)!
 
   srcCtx.drawImage(tileJob.src, 0, 0)
   const src = srcCtx.getImageData(0, 0, tileJob.width, tileJob.height).data
@@ -45,7 +47,7 @@ function resizeBitmap (data: WorkerResizePayload, tileJob: TileResizeBitmapJob):
 
   const result = resize_math(data, mathOpts)
   const canvas = new OffscreenCanvas(tileJob.toWidth, tileJob.toHeight)
-  const ctx = canvas.getContext('2d')!
+  const ctx = canvas.getContext('2d', ctxOpts)!
 
   const toImageData = ctx.createImageData(tileJob.toWidth, tileJob.toHeight)
   toImageData.data.set(result)

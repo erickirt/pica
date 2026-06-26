@@ -48,6 +48,8 @@ const features: SupportedFeatures = {
 let checked = false
 let checking: Promise<SupportedFeatures> | null = null
 
+const ctxOpts: CanvasRenderingContext2DSettings = { willReadFrequently: true }
+
 function check_canvas (): boolean {
   if (typeof document === 'undefined' || !document.createElement) return false
 
@@ -56,7 +58,7 @@ function check_canvas (): boolean {
     canvas.width = 2
     canvas.height = 1
 
-    const ctx = canvas.getContext('2d')!
+    const ctx = canvas.getContext('2d', ctxOpts)!
 
     // Fingerprinting protection can randomize readback.
     // In that case we can not rely on canvas pixel data.
@@ -79,7 +81,7 @@ function check_offscreen_canvas (): boolean {
 
   try {
     const canvas = new OffscreenCanvas(2, 1)
-    const ctx = canvas.getContext('2d')!
+    const ctx = canvas.getContext('2d', ctxOpts)!
 
     // Fingerprinting protection can randomize readback.
     // In that case we can not rely on canvas pixel data.
@@ -138,7 +140,7 @@ function check_bug_canvas_orientation_region_async (): Promise<boolean> {
           const canvas = new OffscreenCanvas(1, 1)
 
           try {
-            const ctx = canvas.getContext('2d')!
+            const ctx = canvas.getContext('2d', ctxOpts)!
             ctx.drawImage(bitmap, 1, 1, 1, 1, 0, 0, 1, 1)
 
             return ctx.getImageData(0, 0, 1, 1).data[0] < 240
@@ -158,7 +160,7 @@ function check_bug_canvas_orientation_region_async (): Promise<boolean> {
             canvas.width = 1
             canvas.height = 1
 
-            const ctx = canvas.getContext('2d')!
+            const ctx = canvas.getContext('2d', ctxOpts)!
             ctx.drawImage(image, 1, 1, 1, 1, 0, 0, 1, 1)
 
             resolve(ctx.getImageData(0, 0, 1, 1).data[0] < 240)
@@ -208,7 +210,7 @@ function check_bug_image_bitmap_orientation_region_async (): Promise<boolean> {
           }
 
           try {
-            const ctx = canvas.getContext('2d') as PicaCanvasCtx
+            const ctx = canvas.getContext('2d', ctxOpts) as PicaCanvasCtx
             ctx.drawImage(bitmap, 0, 0)
 
             return bitmap.width !== 1 || bitmap.height !== 1 ||
@@ -242,7 +244,7 @@ function check_cib_resize_async (): Promise<boolean> {
       canvas = new OffscreenCanvas(SRC_SIZE, SRC_SIZE)
       // Chrome fails to createImageBitmap() from canvas without drawing
       // anything on it.
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d', ctxOpts)!
       ctx.clearRect(0, 0, SRC_SIZE, SRC_SIZE)
     } else {
       return false

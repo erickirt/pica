@@ -63,6 +63,8 @@ const DEFAULT_RESIZE_OPTS = {
   unsharpThreshold: 0
 }
 
+const ctxOpts: CanvasRenderingContext2DSettings = { willReadFrequently: true }
+
 // //////////////////////////////////////////////////////////////////////////////
 // API methods
 
@@ -283,7 +285,7 @@ export class Pica {
       this.debug('Create tile imageBitmap')
 
       const tileCanvas = this.createCanvas(tile.width, tile.height, { preferOffscreen: true })
-      const tileCtx = tileCanvas.getContext('2d') as PicaCanvasCtx
+      const tileCtx = tileCanvas.getContext('2d', ctxOpts) as PicaCanvasCtx
 
       tileCtx.drawImage(stageEnv.srcImageBitmap || from,
         tile.x, tile.y, tile.width, tile.height,
@@ -310,7 +312,7 @@ export class Pica {
 
     // Extract tile RGBA buffer, depending on input type
     if (utils.isCanvas(from)) {
-      if (!stageEnv.srcCtx) stageEnv.srcCtx = from.getContext('2d') as PicaCanvasCtx
+      if (!stageEnv.srcCtx) stageEnv.srcCtx = from.getContext('2d', ctxOpts) as PicaCanvasCtx
 
       // If input is Canvas - extract region data directly
       this.debug('Get tile pixel data')
@@ -329,7 +331,7 @@ export class Pica {
 
     const tmpCanvas = this.createCanvas(tile.width, tile.height, { preferOffscreen: true })
 
-    const tmpCtx = tmpCanvas.getContext('2d') as PicaCanvasCtx
+    const tmpCtx = tmpCanvas.getContext('2d', ctxOpts) as PicaCanvasCtx
     tmpCtx.globalCompositeOperation = 'copy'
     tmpCtx.drawImage(stageEnv.srcImageBitmap || from,
       tile.x, tile.y, tile.width, tile.height,
@@ -421,7 +423,7 @@ export class Pica {
     // If image - try to decode in background if possible
     await Promise.resolve()
 
-    stageEnv.toCtx = to.getContext('2d') as PicaCanvasCtx
+    stageEnv.toCtx = to.getContext('2d', ctxOpts) as PicaCanvasCtx
 
     if (utils.isCanvas(from)) {
     // Source is ready as-is.
@@ -547,7 +549,7 @@ export class Pica {
     resizeParams: ResizeParams,
     ctx: ResizeContext
   ): Promise<PicaCanvas> {
-    let toCtx: PicaCanvasCtx | null = to.getContext('2d') as PicaCanvasCtx
+    let toCtx: PicaCanvasCtx | null = to.getContext('2d', ctxOpts) as PicaCanvasCtx
 
     this.debug('Resize via createImageBitmap()')
 
@@ -573,7 +575,7 @@ export class Pica {
 
     let tmpCanvas: PicaCanvas | null = this.createCanvas(resizeParams.toWidth, resizeParams.toHeight)
 
-    let tmpCtx: PicaCanvasCtx | null = tmpCanvas.getContext('2d') as PicaCanvasCtx
+    let tmpCtx: PicaCanvasCtx | null = tmpCanvas.getContext('2d', ctxOpts) as PicaCanvasCtx
 
     tmpCtx.drawImage(imageBitmap, 0, 0)
     imageBitmap.close()
@@ -667,7 +669,7 @@ export class Pica {
     if (this.capabilities.bug_image_bitmap_orientation_region &&
         (utils.isImage(from) || (utils.isImageBitmap(from)))) {
       const tmpCanvas = this.createCanvas(resizeParams.width, resizeParams.height)
-      const tmpCtx = tmpCanvas.getContext('2d') as PicaCanvasCtx
+      const tmpCtx = tmpCanvas.getContext('2d', ctxOpts) as PicaCanvasCtx
       tmpCtx.drawImage(from, 0, 0)
       from = tmpCanvas
     }
